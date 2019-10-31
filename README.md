@@ -67,7 +67,8 @@ This is an example:
     "regions": ["eu-central-1", "us-east-1"],
     "key_file_path_private": "/home/example/.ssh/somekey",
     "key_file_path_public": "/home/example/.ssh/somekey.pub",
-    "forward_agent": true
+    "forward_agent": true,
+    "profile": "dev-account"
 }
 ```
 
