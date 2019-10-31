@@ -62,13 +62,13 @@ This is an example:
 
 ```json
 {
+    "profile": "dev-account",
     "os_user": "kevin",
     "use_private_id": true,
     "regions": ["eu-central-1", "us-east-1"],
     "key_file_path_private": "/home/example/.ssh/somekey",
     "key_file_path_public": "/home/example/.ssh/somekey.pub",
-    "forward_agent": true,
-    "profile": "dev-account"
+    "forward_agent": true
 }
 ```
 
