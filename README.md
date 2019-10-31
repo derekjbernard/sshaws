@@ -63,6 +63,7 @@ This is an example:
 
 ```json
 {
+    "profile": "dev-account",
     "os_user": "kevin",
     "use_private_id": true,
     "regions": ["eu-central-1", "us-east-1"],
