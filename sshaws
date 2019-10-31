@@ -9,8 +9,6 @@ from os.path import expanduser, isfile, join
 
 import boto3
 
-import botocore
-
 from botocore.exceptions import ClientError
 
 
@@ -48,14 +46,12 @@ parser.add_argument('--private-key-file', type=argparse.FileType('r'),
 parser.add_argument('--regions', type=str, nargs='+', default=default_regions, help=f'Look for the instance in the given regions. Default: {default_regions}')
 parser.add_argument('--use-private-ip', action='store_true', help=f'Use private IP even if public IP is available. sshaws will use private ip automatically, if no public IP is available.', default=default_use_private_ip)
 parser.add_argument('-a', '--forward-agent', action='store_true', help=f'Enables ssh agent forwarding', default=default_forward_agent)
-parser.add_argument('-u', '--profile', action='store', help='AWS Config Profile', type=str, default=default_profile_name, metavar='')
+parser.add_argument('-u', '--profile', action='store', help=f'AWS Config Profile', type=str, default=default_profile_name, metavar='')
 args = parser.parse_args()
 
 def connect(region, profile_name):
-
     session = boto3.session.Session(profile_name=profile_name, region_name=region)
     ec2_client = session.client('ec2')
- 
     try:
         print(f'Looking for instance {args.instance_id} in region {region}')
         response = ec2_client.describe_instances(InstanceIds=[args.instance_id])
@@ -65,15 +61,12 @@ def connect(region, profile_name):
         else:
             print(f'Did not find instance {args.instance_id} in region {region}')
             return None
-
     instance = response['Reservations'][0]['Instances'][0]
     zone = instance['Placement']['AvailabilityZone']
-
     if args.use_private_ip or 'PublicIpAddress' not in instance:
         ip = instance['PrivateIpAddress']
     else:
         ip = instance['PublicIpAddress']
-
     connect_client = session.client('ec2-instance-connect')
     connect_client.send_ssh_public_key(
         InstanceId=args.instance_id,
@@ -98,4 +91,3 @@ if args.forward_agent:
     command_list.append('-A')
 command_list.extend(['-i', args.private_key_file.name, f'{args.os_user}@{ip_to_connect_to}'])
 subprocess.run(command_list)
-
